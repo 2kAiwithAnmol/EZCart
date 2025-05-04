@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-
+import {useCart} from '../context/CartContext'
 const Navbar = () => {
+  const {cartItems} = useCart();
+  const totalItems = cartItems.reduce((sum,item) => sum + item.quantity,0);
   const [menuOpen, setMenuOpen] = useState(false);
   return (
     <nav className="flex bg-white shadow-md px-6 py-4 justify-between items-center">
@@ -19,7 +21,7 @@ const Navbar = () => {
         <li><Link to="/shop" onClick={() => setMenuOpen(false)}>Shop</Link></li>
         <li><Link to="/about" onClick={() => setMenuOpen(false)}>About</Link></li>
         <li><Link to="/contact" onClick={() => setMenuOpen(false)}>Contact</Link></li>
-        <li><Link to="/cart" onClick={() => setMenuOpen(false)}>Cart</Link></li>
+        <li><Link to="/cart" onClick={() => setMenuOpen(false)}>Cart {totalItems > 0 && <span className="text-sm bg-blue-600 text-white px-2 py-0.5 rounded-full ml-1">{totalItems}</span>}</Link></li>
         <li><Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link></li>
         <li><Link to="/signup" onClick={() => setMenuOpen(false)}>SignUp</Link></li>
       </ul>
