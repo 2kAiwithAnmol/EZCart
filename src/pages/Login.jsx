@@ -1,6 +1,9 @@
 import React , {useState} from "react";
-
+import {useAuth} from "../context/AuthContext"
+import { useNavigate } from "react-router-dom";
 const Login = () => {
+  const {login} = useAuth();
+  const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState({});
@@ -19,7 +22,8 @@ const Login = () => {
         }
         setErrors(newErrors);
         if(Object.keys(newErrors).length === 0) {
-            alert("Login successful");
+            login();
+            navigate("/cart");
         }
     }
     return (
