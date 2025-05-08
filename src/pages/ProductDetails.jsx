@@ -12,12 +12,12 @@ const ProductDetails = () => {
         <div className="max-w-4xl mx-auto p-6">
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <img src={product.image} alt={product.name}
-                class="w-full h-96 object-contain"
+                className="w-full h-96 object-contain"
                 />
                 <div className="p-6">
                     <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
                     <p className="text-xl text-black-600 font-semibold mb-4">{product.price}</p>
-                    <p className="text-gray-600">this is a great product {product.name}! High quality and affordable. Order now</p>
+                    <p className="text-gray-600"> Experience premium quality with our {product.name}. Built to last, priced to impress!</p>
                 </div>
             </div>
         </div>

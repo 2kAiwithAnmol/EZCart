@@ -8,7 +8,9 @@ const Cart = () => {
     <div className="p-4 sm:p-4">
       <h2 className="text-2xl sm:text-3xl font-bold mb-6">Your Cart</h2>
       {cartItems.length === 0 ? (
-        <p>Your cart is empty</p>
+         <div className="text-center text-gray-600 mt-10 text-lg">
+         Your cart is empty 
+       </div>
       ) : (
         <div className="space-y-6">
           {cartItems.map((item) => (
