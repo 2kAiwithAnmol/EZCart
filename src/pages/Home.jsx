@@ -1,14 +1,63 @@
+import { useState } from "react";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
+import Sidebar from "../components/Sidebar";
 
 const Home = () => {
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedPriceRange, setSelectedPriceRange] = useState("");
+  const [selectedRating, setSelectedRating] = useState(null);
+
+  const handleCategoryChange = (category) => setSelectedCategory(category);
+
+
+  const handlePriceChange = (range) => setSelectedPriceRange(range);
+
+ 
+  const handleRatingChange = (rating) => setSelectedRating(rating);
+
+  
+  const filteredProducts = products.filter((product) => {
+    let isCategoryMatch = selectedCategory
+      ? product.name.toLowerCase().includes(selectedCategory.toLowerCase())
+      : true;
+
+    let priceNum = parseInt(product.price.replace(/[^\d]/g, ""));
+    let isPriceMatch = true;
+
+    if (selectedPriceRange === "under1000") isPriceMatch = priceNum < 1000;
+    else if (selectedPriceRange === "1000to3000")
+      isPriceMatch = priceNum >= 1000 && priceNum <= 3000;
+    else if (selectedPriceRange === "3000to5000")
+      isPriceMatch = priceNum > 3000 && priceNum <= 5000;
+    else if (selectedPriceRange === "above5000")
+      isPriceMatch = priceNum > 5000;
+
+    let isRatingMatch = true;
+    if (selectedRating) isRatingMatch = product.rating >= selectedRating;
+
+    return isCategoryMatch && isPriceMatch && isRatingMatch;
+  });
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product}/>
-        ))}
+    <div className="flex">
+      
+      <Sidebar
+        onCategoryChange={handleCategoryChange}
+        onPriceChange={handlePriceChange}
+        onRatingChange={handleRatingChange}
+      />
+      <div className="p-6 w-full">
+        <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <p>No products found.</p>
+          )}
+        </div>
       </div>
     </div>
   );
