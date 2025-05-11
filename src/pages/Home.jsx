@@ -3,23 +3,21 @@ import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import Sidebar from "../components/Sidebar";
 
-const Home = () => {
+const Home = ({ searchTerm }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
 
   const handleCategoryChange = (category) => setSelectedCategory(category);
-
-
   const handlePriceChange = (range) => setSelectedPriceRange(range);
-
- 
   const handleRatingChange = (rating) => setSelectedRating(rating);
 
-  
   const filteredProducts = products.filter((product) => {
-    let isCategoryMatch = selectedCategory
+    const isCategoryMatch = selectedCategory
       ? product.name.toLowerCase().includes(selectedCategory.toLowerCase())
+      : true;
+     const isSearchMatch = searchTerm
+      ? product.name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
     let priceNum = parseInt(product.price.replace(/[^\d]/g, ""));
@@ -32,11 +30,10 @@ const Home = () => {
       isPriceMatch = priceNum > 3000 && priceNum <= 5000;
     else if (selectedPriceRange === "above5000")
       isPriceMatch = priceNum > 5000;
-
-    let isRatingMatch = true;
-    if (selectedRating) isRatingMatch = product.rating >= selectedRating;
-
-    return isCategoryMatch && isPriceMatch && isRatingMatch;
+     const isRatingMatch = selectedRating
+      ? product.rating >= selectedRating
+      : true;
+    return isCategoryMatch && isPriceMatch && isRatingMatch && isSearchMatch;
   });
 
   return (

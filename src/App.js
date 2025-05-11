@@ -1,3 +1,4 @@
+import  {useState} from "react";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -10,13 +11,14 @@ import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState("");
   return (
     <AuthProvider>
       <CartProvider>
         <Router>
-          <Navbar />
+          <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home searchTerm={searchTerm}/>} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
             <Route path="/login" element={<Login />} />

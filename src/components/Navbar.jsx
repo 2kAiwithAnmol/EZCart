@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import {useCart} from '../context/CartContext'
-const Navbar = () => {
+const Navbar = ({ searchTerm, setSearchTerm }) => {
   const {cartItems} = useCart();
   const totalItems = cartItems.reduce((sum,item) => sum + item.quantity,0);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,6 +11,13 @@ const Navbar = () => {
       <div className="text-2xl font-bold text-blue-600">
         <Link to="/">EZCart</Link>
       </div>
+       <input
+        type="text"
+        placeholder="Search products..."
+        className="border rounded px-3 py-1 w-60"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
       <div className="md:hidden cursor-pointer">
         {menuOpen ? (<X onClick={() => setMenuOpen(false)} />) : (<Menu onClick={() => setMenuOpen(true)} />)}
       </div>
