@@ -7,6 +7,8 @@ const Home = ({ searchTerm }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
+  const [sortOption, setSortOption] = useState("");
+
 
   const handleCategoryChange = (category) => setSelectedCategory(category);
   const handlePriceChange = (range) => setSelectedPriceRange(range);
@@ -35,20 +37,50 @@ const Home = ({ searchTerm }) => {
       : true;
     return isCategoryMatch && isPriceMatch && isRatingMatch && isSearchMatch;
   });
+  
+     const sortedProducts = [...filteredProducts];
+
+  if (sortOption === "lowToHigh") {
+    sortedProducts.sort(
+      (a, b) =>
+        parseInt(a.price.replace(/[^\d]/g, "")) -
+        parseInt(b.price.replace(/[^\d]/g, ""))
+    );
+  } else if (sortOption === "highToLow") {
+    sortedProducts.sort(
+      (a, b) =>
+        parseInt(b.price.replace(/[^\d]/g, "")) -
+        parseInt(a.price.replace(/[^\d]/g, ""))
+    );
+  } else if (sortOption === "rating") {
+    sortedProducts.sort((a, b) => b.rating - a.rating);
+  }
 
   return (
     <div className="flex">
-      
       <Sidebar
         onCategoryChange={handleCategoryChange}
         onPriceChange={handlePriceChange}
         onRatingChange={handleRatingChange}
       />
       <div className="p-6 w-full">
+        <div className="flex justify-end mb-4">
+          <select
+            onChange={(e) => setSortOption(e.target.value)}
+            className="border px-2 py-1 rounded"
+            value={sortOption}
+          >
+            <option value="">Sort By</option>
+            <option value="lowToHigh">Price: Low to High</option>
+            <option value="highToLow">Price: High to Low</option>
+            <option value="rating">Rating</option>
+          </select>
+        </div>
+
         <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
+          {sortedProducts.length > 0 ? (
+            sortedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
@@ -59,5 +91,6 @@ const Home = ({ searchTerm }) => {
     </div>
   );
 };
+
 
 export default Home;
