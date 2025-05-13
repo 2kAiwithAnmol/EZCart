@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import Sidebar from "../components/Sidebar";
@@ -9,6 +9,8 @@ const Home = ({ searchTerm }) => {
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOption, setSortOption] = useState("");
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 6;
 
   const handleCategoryChange = (category) => setSelectedCategory(category);
   const handlePriceChange = (range) => setSelectedPriceRange(range);
@@ -18,7 +20,7 @@ const Home = ({ searchTerm }) => {
     const isCategoryMatch = selectedCategory
       ? product.name.toLowerCase().includes(selectedCategory.toLowerCase())
       : true;
-     const isSearchMatch = searchTerm
+    const isSearchMatch = searchTerm
       ? product.name.toLowerCase().includes(searchTerm.toLowerCase())
       : true;
 
@@ -32,13 +34,13 @@ const Home = ({ searchTerm }) => {
       isPriceMatch = priceNum > 3000 && priceNum <= 5000;
     else if (selectedPriceRange === "above5000")
       isPriceMatch = priceNum > 5000;
-     const isRatingMatch = selectedRating
+    const isRatingMatch = selectedRating
       ? product.rating >= selectedRating
       : true;
     return isCategoryMatch && isPriceMatch && isRatingMatch && isSearchMatch;
   });
-  
-     const sortedProducts = [...filteredProducts];
+
+  const sortedProducts = [...filteredProducts];
 
   if (sortOption === "lowToHigh") {
     sortedProducts.sort(
@@ -55,6 +57,20 @@ const Home = ({ searchTerm }) => {
   } else if (sortOption === "rating") {
     sortedProducts.sort((a, b) => b.rating - a.rating);
   }
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = sortedProducts.slice(
+    indexOfFirstProduct, indexOfLastProduct
+  );
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [
+    searchTerm,
+    selectedCategory,
+    selectedPriceRange,
+    selectedRating,
+    sortOption,
+  ]);
 
   return (
     <div className="flex">
@@ -64,6 +80,7 @@ const Home = ({ searchTerm }) => {
         onRatingChange={handleRatingChange}
       />
       <div className="p-6 w-full">
+        {/* Sort Dropdown */}
         <div className="flex justify-end mb-4">
           <select
             onChange={(e) => setSortOption(e.target.value)}
@@ -77,10 +94,33 @@ const Home = ({ searchTerm }) => {
           </select>
         </div>
 
+        {/* Pagination Buttons */}
+        <div className="flex justify-center gap-4 mb-6">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) =>
+                indexOfLastProduct < sortedProducts.length ? prev + 1 : prev
+              )
+            }
+            disabled={indexOfLastProduct >= sortedProducts.length}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+
+        {/* Product Grid */}
         <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {sortedProducts.length > 0 ? (
-            sortedProducts.map((product) => (
+          {currentProducts.length > 0 ? (
+            currentProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
@@ -91,6 +131,5 @@ const Home = ({ searchTerm }) => {
     </div>
   );
 };
-
 
 export default Home;

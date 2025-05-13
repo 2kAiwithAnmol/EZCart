@@ -17,6 +17,7 @@ const products = [
         price: "₹4999",
         image: "https://dms.mydukaan.io/original/jpeg/media/2cf742b5-b177-4b6f-b8ec-56abebdec8e5.webp"
     }
+   
 ]
 
 export default products
