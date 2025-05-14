@@ -2,12 +2,21 @@ import { useEffect, useState } from "react";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import Sidebar from "../components/Sidebar";
+import SkeletonCard from "../components/SkeletonCard";
 
 const Home = ({ searchTerm }) => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOption, setSortOption] = useState("");
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [searchTerm, selectedCategory, selectedPriceRange, selectedRating, sortOption]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
@@ -119,14 +128,17 @@ const Home = ({ searchTerm }) => {
         {/* Product Grid */}
         <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {currentProducts.length > 0 ? (
+          {loading ? (
+            Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />)
+          ) : currentProducts.length > 0 ? (
             currentProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
-            <p>No products found.</p>
+            <p className="text-center text-gray-500 text-lg mt-8">No products found.</p>
           )}
         </div>
+
       </div>
     </div>
   );
