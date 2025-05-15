@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}", // ये सबसे जरूरी है
+    "./src/**/*.{js,jsx,ts,tsx}", 
   ],
   theme: {
     extend: {},

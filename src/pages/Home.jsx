@@ -135,7 +135,7 @@ const Home = ({ searchTerm }) => {
               <ProductCard key={product.id} product={product} />
             ))
           ) : (
-            <p className="text-center text-gray-500 text-lg mt-8">No products found.</p>
+            <p>No products found.</p>
           )}
         </div>
 
