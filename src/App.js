@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,6 +17,7 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <Router>
+           <ScrollToTop />
           <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
           <Routes>
             <Route path="/" element={<Home searchTerm={searchTerm}/>} />
