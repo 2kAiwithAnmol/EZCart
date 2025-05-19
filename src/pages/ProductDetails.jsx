@@ -11,8 +11,10 @@ const ProductDetails = () => {
     return (
         <div className="max-w-4xl mx-auto p-6">
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
-                <img src={product.image} alt={product.name}
-                className="w-full h-96 object-contain"
+               <img
+                    src={product.image || "https://via.placeholder.com/600x400"}
+                    alt={product.name}
+                    className="w-full h-96 object-contain"
                 />
                 <div className="p-6">
                     <h1 className="text-3xl font-bold mb-4">{product.name}</h1>

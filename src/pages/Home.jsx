@@ -1,79 +1,85 @@
 import { useEffect, useState } from "react";
-import products from "../data/products";
 import ProductCard from "../components/ProductCard";
 import Sidebar from "../components/Sidebar";
 import SkeletonCard from "../components/SkeletonCard";
 
 const Home = ({ searchTerm }) => {
+  const [allProducts, setAllProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOption, setSortOption] = useState("");
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false)
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [searchTerm, selectedCategory, selectedPriceRange, selectedRating, sortOption]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 6;
 
-  const handleCategoryChange = (category) => setSelectedCategory(category);
-  const handlePriceChange = (range) => setSelectedPriceRange(range);
-  const handleRatingChange = (rating) => setSelectedRating(rating);
-
-  const filteredProducts = products.filter((product) => {
-    const isCategoryMatch = selectedCategory
-      ? product.name.toLowerCase().includes(selectedCategory.toLowerCase())
-      : true;
-    const isSearchMatch = searchTerm
-      ? product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      : true;
-
-    let priceNum = parseInt(product.price.replace(/[^\d]/g, ""));
-    let isPriceMatch = true;
-
-    if (selectedPriceRange === "under1000") isPriceMatch = priceNum < 1000;
-    else if (selectedPriceRange === "1000to3000")
-      isPriceMatch = priceNum >= 1000 && priceNum <= 3000;
-    else if (selectedPriceRange === "3000to5000")
-      isPriceMatch = priceNum > 3000 && priceNum <= 5000;
-    else if (selectedPriceRange === "above5000")
-      isPriceMatch = priceNum > 5000;
-    const isRatingMatch = selectedRating
-      ? product.rating >= selectedRating
-      : true;
-    return isCategoryMatch && isPriceMatch && isRatingMatch && isSearchMatch;
-  });
-
-  const sortedProducts = [...filteredProducts];
-
-  if (sortOption === "lowToHigh") {
-    sortedProducts.sort(
-      (a, b) =>
-        parseInt(a.price.replace(/[^\d]/g, "")) -
-        parseInt(b.price.replace(/[^\d]/g, ""))
-    );
-  } else if (sortOption === "highToLow") {
-    sortedProducts.sort(
-      (a, b) =>
-        parseInt(b.price.replace(/[^\d]/g, "")) -
-        parseInt(a.price.replace(/[^\d]/g, ""))
-    );
-  } else if (sortOption === "rating") {
-    sortedProducts.sort((a, b) => b.rating - a.rating);
-  }
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = sortedProducts.slice(
-    indexOfFirstProduct, indexOfLastProduct
-  );
+  // 🔹 Fetch products
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("https://api.escuelajs.co/api/v1/products");
+        const data = await res.json();
+
+        // Add random rating for demo
+        const withRating = data.map((p) => ({
+          ...p,
+          rating: Math.floor(Math.random() * 3) + 3,
+        }));
+
+        setAllProducts(withRating);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products", error);
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    let updated = [...allProducts];
+
+    if (searchTerm) {
+      updated = updated.filter((p) =>
+        p.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedCategory) {
+      updated = updated.filter((p) => p.category?.name === selectedCategory);
+    }
+
+    if (selectedPriceRange) {
+      updated = updated.filter((p) => {
+        const price = p.price;
+        if (selectedPriceRange === "under1000") return price < 1000;
+        if (selectedPriceRange === "1000to3000") return price >= 1000 && price <= 3000;
+        if (selectedPriceRange === "3000to5000") return price > 3000 && price <= 5000;
+        if (selectedPriceRange === "above5000") return price > 5000;
+        return true;
+      });
+    }
+
+    if (selectedRating) {
+      updated = updated.filter((p) => p.rating >= selectedRating);
+    }
+
+    if (sortOption === "lowToHigh") {
+      updated.sort((a, b) => a.price - b.price);
+    } else if (sortOption === "highToLow") {
+      updated.sort((a, b) => b.price - a.price);
+    } else if (sortOption === "rating") {
+      updated.sort((a, b) => b.rating - a.rating);
+    }
+
+    setFilteredProducts(updated);
     setCurrentPage(1);
   }, [
+    allProducts,
     searchTerm,
     selectedCategory,
     selectedPriceRange,
@@ -81,15 +87,19 @@ const Home = ({ searchTerm }) => {
     sortOption,
   ]);
 
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
   return (
     <div className="flex">
       <Sidebar
-        onCategoryChange={handleCategoryChange}
-        onPriceChange={handlePriceChange}
-        onRatingChange={handleRatingChange}
+        products={allProducts}
+        onCategoryChange={setSelectedCategory}
+        onPriceChange={setSelectedPriceRange}
+        onRatingChange={setSelectedRating}
       />
       <div className="p-6 w-full">
-        {/* Sort Dropdown */}
         <div className="flex justify-end mb-4">
           <select
             onChange={(e) => setSortOption(e.target.value)}
@@ -103,7 +113,6 @@ const Home = ({ searchTerm }) => {
           </select>
         </div>
 
-        {/* Pagination Buttons */}
         <div className="flex justify-center gap-4 mb-6">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -115,17 +124,16 @@ const Home = ({ searchTerm }) => {
           <button
             onClick={() =>
               setCurrentPage((prev) =>
-                indexOfLastProduct < sortedProducts.length ? prev + 1 : prev
+                indexOfLastProduct < filteredProducts.length ? prev + 1 : prev
               )
             }
-            disabled={indexOfLastProduct >= sortedProducts.length}
+            disabled={indexOfLastProduct >= filteredProducts.length}
             className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
           >
             Next
           </button>
         </div>
 
-        {/* Product Grid */}
         <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {loading ? (
@@ -138,7 +146,6 @@ const Home = ({ searchTerm }) => {
             <p>No products found.</p>
           )}
         </div>
-
       </div>
     </div>
   );

@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Menu, X } from "lucide-react";
 
-const Sidebar = ({ onCategoryChange, onPriceChange, onRatingChange }) => {
+const Sidebar = ({ products, onCategoryChange, onPriceChange, onRatingChange }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  
-  const categories = ["Headphones", "Earbuds", "Speakers", "Accessories"];
-
+  // 🔹 Extract unique categories from products
+  const categories = useMemo(() => {
+    const catSet = new Set();
+    products.forEach((p) => {
+      if (p.category?.name) {
+        catSet.add(p.category.name);
+      }
+    });
+    return Array.from(catSet);
+  }, [products]);
 
   const priceRanges = [
     { label: "Under ₹1000", value: "under1000" },
@@ -14,7 +21,6 @@ const Sidebar = ({ onCategoryChange, onPriceChange, onRatingChange }) => {
     { label: "₹3000 - ₹5000", value: "3000to5000" },
     { label: "Above ₹5000", value: "above5000" },
   ];
-
 
   const ratings = [
     { label: "4★ & above", value: 4 },
@@ -25,15 +31,14 @@ const Sidebar = ({ onCategoryChange, onPriceChange, onRatingChange }) => {
   return (
     <>
       <div className="sm:hidden p-4">
-        <button
-          className="text-blue-600"
-          onClick={() => setIsOpen(!isOpen)}
-        >
+        <button className="text-blue-600" onClick={() => setIsOpen(!isOpen)}>
           {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
       <div
-        className={`bg-white shadow-md rounded-lg p-6 w-64 sm:block ${isOpen ? "block" : "hidden"}`}
+        className={`bg-white shadow-md rounded-lg p-6 w-64 sm:block ${
+          isOpen ? "block" : "hidden"
+        }`}
       >
         <h2 className="text-2xl font-bold mb-3">Categories</h2>
         <ul className="space-y-2">
