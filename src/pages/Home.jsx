@@ -92,15 +92,16 @@ const Home = ({ searchTerm }) => {
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col md:flex-row">
       <Sidebar
+        className="w-full md:w-64 mb-4 md:mb-0"
         products={allProducts}
         onCategoryChange={setSelectedCategory}
         onPriceChange={setSelectedPriceRange}
         onRatingChange={setSelectedRating}
       />
-      <div className="p-6 w-full">
-        <div className="flex justify-end mb-4">
+      <div className="p-4 sm:p-6 w-full space-y-4">
+        <div className="sticky top-0 bg-white z-10 shadow-sm sm:static flex justify-end">
           <select
             onChange={(e) => setSortOption(e.target.value)}
             className="border px-2 py-1 rounded"
@@ -112,8 +113,8 @@ const Home = ({ searchTerm }) => {
             <option value="rating">Rating</option>
           </select>
         </div>
-
-        <div className="flex justify-center gap-4 mb-6">
+         {/* Pagination */}
+        <div className="flex justify-center gap-2 sm:gap-4">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
@@ -133,8 +134,8 @@ const Home = ({ searchTerm }) => {
             Next
           </button>
         </div>
-
-        <h1 className="text-2xl font-bold mb-4">Featured Products</h1>
+         {/* Products Grid */}
+        <h1 className="text-xl sm:text-2xl font-bold">Featured Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {loading ? (
             Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />)

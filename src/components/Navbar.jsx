@@ -12,36 +12,32 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
 
   // Lock background scroll when mobile menu is open
   useEffect(() => {
-    if (menuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'auto';
-    }
+    document.body.style.overflow = menuOpen ? 'hidden' : 'auto';
     return () => {
       document.body.style.overflow = 'auto';
     };
   }, [menuOpen]);
 
   return (
-    <nav className="bg-white shadow-md px-6 py-4 flex justify-between items-center relative">
+    <nav className="bg-white shadow-md px-6 py-4 flex flex-wrap justify-between items-center relative">
       {/* Logo */}
       <div className="text-2xl font-bold text-blue-600">
         <Link to="/">EZCart</Link>
       </div>
 
-      {/* Search bar for desktop */}
-      <div className="hidden md:block">
+      {/* Search Bar - visible on all screen sizes */}
+      <div className="w-full sm:w-auto mt-4 sm:mt-0">
         <input
           type="text"
           placeholder="Search products..."
-          className="border rounded px-3 py-1 w-60"
+          className="border rounded px-3 py-1 w-full sm:w-60"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
       {/* Mobile menu toggle icon */}
-      <div className="md:hidden z-30">
+      <div className="md:hidden z-30 ml-auto">
         {menuOpen ? (
           <X className="cursor-pointer" onClick={() => setMenuOpen(false)} />
         ) : (
@@ -52,7 +48,7 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
       {/* Menu Links */}
       <ul
         className={`
-          flex-col gap-4 text-center absolute top-16 left-0 w-full bg-white p-6 z-20
+          flex-col gap-4 text-center absolute top-full left-0 w-full bg-white p-6 z-20
           max-h-screen overflow-y-auto
           md:gap-6 md:flex md:flex-row md:static md:w-auto md:p-0 md:bg-transparent md:max-h-none md:overflow-visible
           ${menuOpen ? 'flex' : 'hidden'}
@@ -73,7 +69,6 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
           </Link>
         </li>
 
-        {/* Auth links */}
         {!isAuthenticated ? (
           <>
             <li><Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link></li>
