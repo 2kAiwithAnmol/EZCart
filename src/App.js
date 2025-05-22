@@ -10,6 +10,7 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ScrollToTop from "./components/ScrollToTop";
+import Checkout from "./components/Checkout";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<Home searchTerm={searchTerm}/>} />
             <Route path="/product/:id" element={<ProductDetails />} />
             <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>

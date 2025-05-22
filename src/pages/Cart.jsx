@@ -1,8 +1,12 @@
 import React from "react";
 import { useCart } from "../context/CartContext";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
+
+  // Total price calculate kar rahe hain
+  const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <div className="p-4 sm:p-4">
@@ -12,28 +16,62 @@ const Cart = () => {
           Your cart is empty
         </div>
       ) : (
-        <div className="space-y-6">
-          {cartItems.map((item) => (
-            <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white shadow-md rounded-lg p-4">
+        <>
+          <div className="space-y-6">
+            {cartItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col sm:flex-row items-center bg-white shadow-md rounded-lg p-4"
+              >
                 <img
-                src={item.images?.[0] || "https://via.placeholder.com/150x150"}
-                alt={item.title}
-                className="w-32 h-32 object-contain mb-4 sm:mb-0"
-              />
+                  src={item.images?.[0] || "https://via.placeholder.com/150x150"}
+                  alt={item.title}
+                  className="w-32 h-32 object-contain mb-4 sm:mb-0"
+                />
 
-              <div className="sm:ml-6 flex-1 text-center sm:text-left">
-                <h2 className="text-xl font-bold">{item.name}</h2>
-                <p className="text-green-600 font-semibold">{item.price}</p>
+                <div className="sm:ml-6 flex-1 text-center sm:text-left">
+                  <h2 className="text-xl font-bold">{item.name}</h2>
+                  <p className="text-green-600 font-semibold">₹{item.price}</p>
+                </div>
+                <div className="flex items-center justify-center space-x-4 mt-4 sm:mt-0">
+                  <button
+                    onClick={() => updateQuantity(item.id, -1)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    -
+                  </button>
+                  <span>{item.quantity}</span>
+                  <button
+                    onClick={() => updateQuantity(item.id, 1)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    +
+                  </button>
+                </div>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="ml-4 text-red-600 font-semibold"
+                >
+                  Remove
+                </button>
               </div>
-              <div className="flex items-center justify-center space-x-4 mt-4 sm:mt-0">
-                <button onClick={() => updateQuantity(item.id, -1)} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, 1)} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">+</button>
-              </div>
-              <button onClick={() => removeFromCart(item.id)} className="ml-4 text-red-600 font-semibold">Remove</button>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+
+          {/* Total Amount Display */}
+          <div className="mt-6 text-right text-xl font-bold">
+            Total: ₹{totalAmount}
+          </div>
+
+          {/* Proceed to Checkout Button */}
+          <div className="mt-6 text-right">
+            <Link to="/checkout">
+              <button className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+                Proceed to Checkout
+              </button>
+            </Link>
+          </div>
+        </>
       )}
     </div>
   );

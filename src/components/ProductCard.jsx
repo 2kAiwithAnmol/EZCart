@@ -21,7 +21,12 @@ const ProductCard = ({ product }) => {
 
       <button
         className="mt-2 px-4 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-200"
-        onClick={() => addToCart(product)}
+        onClick={() =>
+  addToCart({
+    ...product,
+    image: product.images?.[0] || "https://via.placeholder.com/600x400",
+  })
+}
       >
         Add to Cart
       </button>

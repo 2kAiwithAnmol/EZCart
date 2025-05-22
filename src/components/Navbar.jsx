@@ -68,6 +68,7 @@ const Navbar = ({ searchTerm, setSearchTerm }) => {
             )}
           </Link>
         </li>
+       
 
         {!isAuthenticated ? (
           <>
