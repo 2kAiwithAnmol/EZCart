@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart } = useCart();
 
-  // Total price calculate kar rahe hain
+  // Calculate total price
   const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
