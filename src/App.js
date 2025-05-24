@@ -11,6 +11,8 @@ import { AuthProvider } from "./context/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import Checkout from "./components/Checkout";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +29,8 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
           </Routes>
         </Router>
       </CartProvider>
