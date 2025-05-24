@@ -23,23 +23,28 @@
 - **Routing**: React Router DOM  
 - **State Management**: React Context API  
 - **API**: DummyJSON / Fake Store API  
-- **Tooling**: Vite (Blazing-fast dev server)  
 
 ---
 
 ## 📁 Folder Structure
 
+
+```
 ezcart/
 ├── public/
 ├── src/
-│ ├── components/ # Navbar, ProductCard, etc.
-│ ├── context/ # Cart Context API
-│ ├── pages/ # Home, Cart, Login, Signup, Checkout
-│ ├── data/ # Local product data (if any)
-│ ├── App.jsx
-│ ├── main.jsx
-│ └── index.css
+│   ├── components/       # Navbar, ProductCard, etc.
+│   ├── context/          # Cart Context API
+│   ├── pages/            # Home, Cart, Login, Signup, Checkout
+│   ├── data/             # Local product data (if any)
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+├── package.json
+├── tailwind.config.js
+├── postcss.config.js
 └── README.md
+```
 
 
 ---
@@ -58,4 +63,4 @@ npm install
 ### 3. Run the App
 npm run dev
 
-###. Made with 💙 by Anmol
+##. Made with 💙 by Anmol
