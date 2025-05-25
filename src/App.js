@@ -13,6 +13,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import Checkout from "./components/Checkout";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import Shop from "./pages/Shop";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -31,6 +32,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
+            <Route path="/shop" element={<Shop />} />
           </Routes>
         </Router>
       </CartProvider>
